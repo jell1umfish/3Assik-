@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Contract Interface</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.3/dist/web3.min.js"></script>
+    <script type="text/javascript">
+        // Replace with your contract address and ABI
+        const contractAddress = 'CONTRACT_ADDRESS';
+        const contractABI = [
+            // Contract ABI here
+        ];
+
+        window.addEventListener('load', async () => {
+            if (window.ethereum) {
+                window.web3 = new Web3(window.ethereum);
+                await window.ethereum.enable();
+            } else if (window.web3) {
+                window.web3 = new Web3(window.web3.currentProvider);
+            } else {
+                console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+            }
+
+            const contract = new window.web3.eth.Contract(contractABI, contractAddress);
+
+            // Example function to start voting
+            document.getElementById('startVotingBtn').addEventListener('click', async () => {
+                try {
+                    await contract.methods.startVoting().send({ from: window.ethereum.selectedAddress });
+                    console.log('Voting started successfully!');
+                } catch (error) {
+                    console.error('Error starting voting:', error);
+                }
+            });
+
+            // Example function to stop voting
+            document.getElementById('stopVotingBtn').addEventListener('click', async () => {
+                try {
+                    await contract.methods.stopVoting().send({ from: window.ethereum.selectedAddress });
+                    console.log('Voting stopped successfully!');
+                } catch (error) {
+                    console.error('Error stopping voting:', error);
+                }
+            });
+
+            // Example function to add a vote
+            document.getElementById('addVoteBtn').addEventListener('click', async () => {
+                const receiverAddress = document.getElementById('receiverAddress').value;
+                try {
+                    await contract.methods.addVote(receiverAddress).send({ from: window.ethereum.selectedAddress });
+                    console.log('Vote added successfully for', receiverAddress);
+                } catch (error) {
+                    console.error('Error adding vote:', error);
+                }
+            });
+
+            // Example function to remove a vote
+            document.getElementById('removeVoteBtn').addEventListener('click', async () => {
+                try {
+                    await contract.methods.removeVote().send({ from: window.ethereum.selectedAddress });
+                    console.log('Vote removed successfully!');
+                } catch (error) {
+                    console.error('Error removing vote:', error);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Voting Contract Interface</h1>
+
+    <button id="startVotingBtn">Start Voting</button>
+    <button id="stopVotingBtn">Stop Voting</button><br><br>
+
+    <label for="receiverAddress">Receiver Address:</label>
+    <input type="text" id="receiverAddress"><br><br>
+    <button id="addVoteBtn">Add Vote</button>
+    <button id="removeVoteBtn">Remove Vote</button>
+</body>
+</html>
